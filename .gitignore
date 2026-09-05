@@ -12,6 +12,9 @@ backend/alembic/__pycache__/
 .vscode/
 .idea/
 
+# Skills de Claude Code vendorizados (fetched via `neon skills -y`, ver skills-lock.json)
+.claude/skills/
+
 # Sistema
 .DS_Store
 Thumbs.db
