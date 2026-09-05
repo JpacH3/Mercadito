@@ -10,9 +10,157 @@
 </head>
 <body>
   <div id="app">
-    <!-- TODO: aqui va el dashboard, formulario de registro, historial, etc. -->
-    <h1>Mercadito</h1>
-    <p>Esqueleto inicial — conectar con la API del backend.</p>
+
+    <header id="app-header" hidden>
+      <h1>Mercadito</h1>
+      <nav id="main-nav">
+        <button data-ruta="dashboard">Dashboard</button>
+        <button data-ruta="listas">Listas</button>
+        <button data-ruta="compras">Compras</button>
+        <button data-ruta="productos">Productos</button>
+        <button data-ruta="pendientes">Pendientes</button>
+        <button data-ruta="precios">Precios</button>
+        <button data-ruta="prediccion">Reabastecimiento</button>
+      </nav>
+      <div id="usuario-actual"></div>
+      <button id="btn-salir">Salir</button>
+    </header>
+
+    <main id="app-main">
+
+      <section id="vista-login">
+        <h2>Mercadito</h2>
+        <p class="ayuda">Control de mercado del hogar</p>
+
+        <form id="form-login">
+          <h3>Iniciar sesion</h3>
+          <input type="email" id="login-email" placeholder="Correo" required>
+          <input type="password" id="login-password" placeholder="Contrasena" required>
+          <button type="submit">Entrar</button>
+          <p class="error" id="login-error" hidden></p>
+        </form>
+
+        <form id="form-registro">
+          <h3>Crear cuenta</h3>
+          <input type="text" id="registro-nombre" placeholder="Nombre" required>
+          <input type="email" id="registro-email" placeholder="Correo" required>
+          <input type="password" id="registro-password" placeholder="Contrasena" required>
+          <button type="submit">Registrarme</button>
+          <p class="error" id="registro-error" hidden></p>
+        </form>
+      </section>
+
+      <section id="vista-dashboard" hidden>
+        <h2>Dashboard</h2>
+        <div class="tarjetas" id="resumen-tarjetas"></div>
+        <div class="columnas">
+          <div>
+            <h3>Por categoria</h3>
+            <table id="tabla-categoria"><tbody></tbody></table>
+          </div>
+          <div>
+            <h3>Por tienda</h3>
+            <table id="tabla-tienda"><tbody></tbody></table>
+          </div>
+        </div>
+      </section>
+
+      <section id="vista-productos" hidden>
+        <h2>Productos</h2>
+        <form id="form-producto">
+          <input type="text" id="producto-nombre" placeholder="Nombre del producto" required>
+          <input type="text" id="producto-unidad" placeholder="Unidad (ej. kg, paquete)">
+          <button type="submit">Agregar producto</button>
+        </form>
+        <table id="tabla-productos">
+          <thead><tr><th>Nombre</th><th>Unidad</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section id="vista-compras" hidden>
+        <h2>Registrar compra manual</h2>
+        <form id="form-compra">
+          <select id="compra-producto" required></select>
+          <input type="date" id="compra-fecha" required>
+          <input type="number" step="0.01" id="compra-cantidad" placeholder="Cantidad" value="1" required>
+          <input type="number" step="0.01" id="compra-precio-unitario" placeholder="Precio unitario">
+          <input type="number" step="0.01" id="compra-precio-total" placeholder="Precio total" required>
+          <input type="text" id="compra-tienda" placeholder="Tienda">
+          <button type="submit">Registrar</button>
+        </form>
+
+        <h2>Historial</h2>
+        <table id="tabla-compras">
+          <thead><tr><th>Fecha</th><th>Producto</th><th>Cant.</th><th>Total</th><th>Tienda</th><th>Origen</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section id="vista-listas" hidden>
+        <div id="listas-panel">
+          <h2>Listas de compra</h2>
+          <form id="form-lista">
+            <input type="date" id="lista-fecha" required>
+            <input type="number" step="0.01" id="lista-presupuesto" placeholder="Presupuesto (opcional)">
+            <input type="text" id="lista-tienda" placeholder="Tienda (opcional)">
+            <button type="submit">Crear lista</button>
+          </form>
+          <table id="tabla-listas">
+            <thead><tr><th>Fecha</th><th>Tienda</th><th>Presupuesto</th><th>Estado</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div id="lista-detalle-panel" hidden>
+          <button id="btn-volver-listas">&larr; Volver a listas</button>
+          <h2 id="lista-detalle-titulo"></h2>
+          <p id="lista-detalle-info" class="ayuda"></p>
+
+          <form id="form-item">
+            <select id="item-producto" required></select>
+            <input type="number" step="0.01" id="item-cantidad" placeholder="Cantidad planeada">
+            <button type="submit">Agregar a la lista</button>
+          </form>
+
+          <table id="tabla-items">
+            <thead><tr><th>Producto</th><th>Plan.</th><th>Precio esperado</th><th>Confirmacion</th></tr></thead>
+            <tbody></tbody>
+          </table>
+
+          <button id="btn-cerrar-lista">Cerrar lista</button>
+          <p id="cerrar-lista-resultado"></p>
+        </div>
+      </section>
+
+      <section id="vista-pendientes" hidden>
+        <h2>Pendientes</h2>
+        <p class="ayuda">Productos planeados que no se confirmaron cuando se cerro su lista. Tu decides si los llevas a una lista nueva.</p>
+        <table id="tabla-pendientes">
+          <thead><tr><th>Producto</th><th>Cantidad planeada</th><th>Precio esperado</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section id="vista-precios" hidden>
+        <h2>Comparacion de precios</h2>
+        <p class="ayuda">Mismo producto, precio distinto entre tiendas (diferencia de al menos 10%).</p>
+        <table id="tabla-precios">
+          <thead><tr><th>Producto</th><th>Precios por tienda</th><th>Diferencia</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section id="vista-prediccion" hidden>
+        <h2>Estimado de reabastecimiento</h2>
+        <p class="ayuda">Calculo aproximado segun tu historial de compras (frecuencia promedio) — no es un inventario real.</p>
+        <table id="tabla-prediccion">
+          <thead><tr><th>Producto</th><th>Cada cuanto compras</th><th>Dias desde la ultima</th><th>Estado</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+    </main>
   </div>
 
   <script src="static/app.js"></script>
