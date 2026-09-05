@@ -17,6 +17,10 @@ class ShoppingList(Base):
     fecha_creacion = Column(Date, nullable=False)
     presupuesto = Column(Float, nullable=True)  # opcional, solo referencia, nunca bloqueante
 
+    # un viaje de compras = una tienda; opcional (igual que presupuesto)
+    # porque puede no saberse todavia al crear la lista
+    tienda = Column(String, nullable=True)
+
     # abierta | cerrada
     estado = Column(String, nullable=False, default="abierta")
 

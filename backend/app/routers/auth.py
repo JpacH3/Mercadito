@@ -75,6 +75,11 @@ def register(data: UserCreate, db: Session = Depends(get_db)):
     return nuevo_usuario
 
 
+@router.get("/me", response_model=UserOut)
+def me(usuario_actual: User = Depends(get_current_user)):
+    return usuario_actual
+
+
 @router.post("/login", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     usuario = db.query(User).filter(User.email == form_data.username).first()

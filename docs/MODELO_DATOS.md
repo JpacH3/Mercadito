@@ -80,6 +80,7 @@ dato y para depurar si algo se ve raro más adelante.
 | usuario_id | UUID (FK → users) | quién creó la lista |
 | fecha_creacion | date | |
 | presupuesto | float, **opcional (nullable)** | solo referencia, NUNCA bloqueante |
+| tienda | string, opcional | un viaje de compras = una tienda; puede no saberse aún al crear la lista. Si está vacía, la alerta de comparación de precios al confirmar un ítem simplemente no se dispara |
 | estado | string | `abierta` \| `cerrada` |
 
 ## shopping_list_items
