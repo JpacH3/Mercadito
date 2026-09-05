@@ -20,3 +20,6 @@ backend/alembic/__pycache__/
 Thumbs.db
 .neon
 .env.local
+
+# Datos personales de facturas (ya importados a la base, no van al repo)
+facturas.csv

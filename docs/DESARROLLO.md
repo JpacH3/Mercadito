@@ -17,7 +17,31 @@ para que coincida con cómo se documenta y se corre el proyecto:
 ```bash
 cd backend
 python -m venv .venv
-source .venv/Scripts/activate   # Windows: .venv\Scripts\activate
+```
+
+Activar el entorno depende de la shell que uses:
+
+```bash
+# Git Bash
+source .venv/Scripts/activate
+```
+
+```powershell
+# PowerShell
+.venv\Scripts\Activate.ps1
+# si da error de "ejecucion de scripts deshabilitada":
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+```cmd
+:: cmd.exe
+.venv\Scripts\activate.bat
+```
+
+Sabrás que quedó activo porque el prompt muestra `(.venv)` al inicio.
+Luego, en cualquiera de las tres:
+
+```bash
 pip install -r requirements.txt
 ```
 
@@ -65,9 +89,10 @@ Alembic todavía no está inicializado (es un TODO pendiente, ver
 tanto, las tablas se crean una vez con un bootstrap directo de
 SQLAlchemy:
 
+Con el entorno activado (paso 2):
+
 ```bash
 cd backend
-source .venv/Scripts/activate
 python -c "
 from dotenv import load_dotenv
 load_dotenv('../.env')
@@ -84,9 +109,10 @@ reemplaza por migraciones reales de Alembic (`alembic init`, luego
 
 ## 5. Levantar el backend
 
+Con el entorno activado (paso 2):
+
 ```bash
 cd backend
-source .venv/Scripts/activate
 uvicorn app.main:app --env-file ../.env --reload --port 8000
 ```
 
@@ -110,6 +136,22 @@ ejemplo:
 ```bash
 curl -X POST http://127.0.0.1:8000/auth/login -d "username=correo@ejemplo.com&password=1234"
 ```
+
+## 6.1 Levantar el frontend
+
+El frontend es HTML/JS simple (sin build step), pero el service worker
+que registra (`service-worker.js`) necesita servirse por http — abrir
+`index.html` directo como archivo (`file://`) no funciona bien. Con el
+backend ya corriendo en el puerto 8000, en otra terminal:
+
+```bash
+cd frontend
+python -m http.server 5500
+```
+
+Y abrir `http://127.0.0.1:5500`. `app.js` apunta a
+`http://127.0.0.1:8000` por defecto (`API_BASE_URL`) — cambiarlo ahí
+cuando el backend este desplegado en otro lado.
 
 ## 7. Problemas ya resueltos (para no repetirlos)
 

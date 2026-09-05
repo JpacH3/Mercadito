@@ -46,12 +46,39 @@ interactiva (Swagger) queda automáticamente en `http://127.0.0.1:8000/docs`.
 Ver [`docs/DESARROLLO.md`](docs/DESARROLLO.md) para la guía completa de
 setup (Neon CLI, `.env`, entorno virtual) y problemas ya resueltos.
 
-## Lo que falta por programar (marcado con TODO en el código)
+## Importar facturas
 
-- Endpoints de `shopping_lists`: agregar item, confirmar item, cerrar lista
-- Cálculo de resumen para el dashboard (total por mes/categoría/tienda)
-- Integración real de comparación de precios en el flujo de confirmar item
+`backend/scripts/importar_facturas.py` toma el CSV extraído de una
+factura (ver columnas en `CLAUDE.md`) y lo carga a la base: crea
+categorías/productos que no existan, resuelve duplicados por código de
+barras (o por nombre vía `product_aliases` cuando no hay código, o
+cuando el mismo código aparece con nombres distintos en el CSV — señal
+de error de lectura en el recibo original), y registra cada línea como
+una compra con `origen="factura"`.
+
+```bash
+cd backend
+python scripts/importar_facturas.py ../facturas.csv \
+  --usuario-email correo@ejemplo.com \
+  --fecha-default 2026-07-01 \
+  --dry-run   # quitar --dry-run cuando el resumen se vea bien
+```
+
+`--fecha-default` se usa solo para filas del CSV sin fecha (facturas
+viejas donde no se conserva la fecha exacta).
+
+## Lo que falta por programar
+
+- Filtros (fecha, categoría, tienda) en `GET /purchases/`, para historial
 - Migraciones con Alembic (ver `backend/alembic/README.md`)
-- Lógica real de `services/normalizacion.py` para las facturas importadas
-- Frontend: pantallas de login, dashboard, registro, modo lista en tienda
+- Matching difuso en `services/normalizacion.py` (hoy solo hace match exacto)
+- Service worker con cache real para soporte offline (hoy pasa todo directo a la red)
+- Asignar categoría a un producto desde la UI (el backend ya lo soporta, falta el selector)
 - Bot de Telegram (cuando decidas qué notificar)
+
+Ya completo: backend (`shopping_lists`, `/purchases/resumen`,
+`/purchases/comparacion-precios`, importación de facturas) y un
+frontend PWA funcional (login, registro, dashboard, productos, compras,
+listas de compra con el checklist completo, pendientes, comparación de
+precios, predicción de reabastecimiento) — ver `docs/DESARROLLO.md`
+para cómo levantarlo.
