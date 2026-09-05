@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+alembic
+pydantic[email]
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt==3.2.2  # passlib 1.7.4 rompe con bcrypt>=4.0 (bug conocido en su auto-deteccion de backend)
+python-dotenv
+python-multipart

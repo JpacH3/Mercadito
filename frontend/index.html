@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mercadito</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#A8432B">
+  <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- TODO: aqui va el dashboard, formulario de registro, historial, etc. -->
+    <h1>Mercadito</h1>
+    <p>Esqueleto inicial — conectar con la API del backend.</p>
+  </div>
+
+  <script src="static/app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+  </script>
+</body>
+</html>

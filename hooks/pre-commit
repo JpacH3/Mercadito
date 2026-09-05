@@ -1,0 +1,47 @@
+#!/bin/sh
+# Hook de pre-commit para Mercadito.
+#
+# Se activa una sola vez por clon del repo con:
+#   git config core.hooksPath hooks
+#
+# Que un archivo este en .gitignore no impide un `git add -f` accidental,
+# asi que esto es una segunda barrera antes de que un secreto real llegue
+# a un commit.
+
+staged_files=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$staged_files" ]; then
+  exit 0
+fi
+
+# --- 1. Bloquear archivos de entorno con secretos reales ---
+blocked_pattern='(^|/)\.env$|(^|/)\.env\.local$|(^|/)\.env\.[^.]*\.local$'
+blocked=$(printf '%s\n' "$staged_files" | grep -E "$blocked_pattern")
+
+if [ -n "$blocked" ]; then
+  echo "Commit bloqueado: estos archivos no deben subirse a git (contienen secretos reales):"
+  echo "$blocked"
+  echo ""
+  echo "Si es un archivo nuevo legitimo (ej. una plantilla como .env.example),"
+  echo "revisa el nombre y .gitignore antes de reintentar."
+  exit 1
+fi
+
+# --- 2. Avisar (no bloquear) de archivos pesados ---
+max_size_kb=5120
+heavy_files=""
+for f in $staged_files; do
+  if [ -f "$f" ]; then
+    size_kb=$(du -k "$f" 2>/dev/null | cut -f1)
+    if [ -n "$size_kb" ] && [ "$size_kb" -gt "$max_size_kb" ]; then
+      heavy_files="$heavy_files\n  $f (${size_kb}KB)"
+    fi
+  fi
+done
+
+if [ -n "$heavy_files" ]; then
+  echo "Aviso: archivos grandes en este commit (revisa si de verdad deben ir en git):"
+  printf "%b\n" "$heavy_files"
+fi
+
+exit 0

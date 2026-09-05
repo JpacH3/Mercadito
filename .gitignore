@@ -1,0 +1,19 @@
+# Entorno
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Alembic (deja la carpeta pero no artefactos temporales)
+backend/alembic/__pycache__/
+
+# Editor
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db
+.neon
+.env.local
